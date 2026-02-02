@@ -1,0 +1,10 @@
+numpy
+pandas
+matplotlib
+networkx
+torch
+plotly
+pyvis
+streamlit-option-menu
+
+
