@@ -23,7 +23,7 @@ st.set_page_config(
     menu_items={
         'Get Help': 'https://github.com/your-repo/v-hivrap/issues',
         'Report a bug': 'https://github.com/your-repo/v-hivrap/issues',
-        'About': "V-HIVRAP v0.1 MVP – Research simulation tool for HIV drug resistance & host interactions."
+        'About': " Research simulation tool for HIV drug resistance & host interactions."
     }
 )
 
@@ -243,7 +243,7 @@ st.markdown("---")
 footer_html = f"""
 <div style='text-align:center; color:#78909c; font-size:0.9rem; padding:1rem;'>
     V-HIVRAP v{st.session_state.app_version} • Research simulation tool • 
-    Developed by Simon • Contact: <a href='mailto:allin@gmail.com'>allin@gmail.com</a>
+    Developed by Simon • Contact: <a href='mailto:symoprof83@gmail.com'>symoprof83@gmail.com</a>
 </div>
 """
 st.markdown(footer_html, unsafe_allow_html=True)
