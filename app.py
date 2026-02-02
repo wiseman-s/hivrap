@@ -37,7 +37,7 @@ if "current_scenario_name" not in st.session_state:
     st.session_state.current_scenario_name = ""
 
 if "app_version" not in st.session_state:
-    st.session_state.app_version = "0.1.0 MVP"
+    st.session_state.app_version = "0.1.0 "
 
 # ───────────────────────────────────────────────
 # Sidebar Navigation
