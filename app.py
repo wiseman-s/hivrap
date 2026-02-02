@@ -19,52 +19,49 @@ st.set_page_config(
     page_title="V-HIVRAP – Virtual HIV Research & Analysis Platform",
     page_icon="🧬",
     layout="wide",
-    initial_sidebar_state="expanded",
-    menu_items={
-        "Get Help": "https://github.com/your-repo/v-hivrap/issues",
-        "Report a bug": "https://github.com/your-repo/v-hivrap/issues",
-        "About": "Research simulation tool for HIV drug resistance & host interactions."
-    }
+    initial_sidebar_state="expanded"
 )
 
 # ───────────────────────────────────────────────
-# ✅ MOBILE-SAFE SIDEBAR COLOR FIX (DO NOT REMOVE)
+# ✅ MOBILE + DESKTOP SIDEBAR VISIBILITY FIX
+# (Neutral, readable, not dark)
 # ───────────────────────────────────────────────
 st.markdown(
     """
     <style>
+    /* Sidebar container */
     section[data-testid="stSidebar"] {
-        background-color: #121212 !important;
+        background-color: #f4f6f8 !important;
     }
 
-    section[data-testid="stSidebar"] .nav {
-        background-color: #121212 !important;
+    /* Sidebar text */
+    section[data-testid="stSidebar"] * {
+        color: #1f2937 !important;
     }
 
+    /* Option menu links */
     section[data-testid="stSidebar"] .nav-link {
-        color: #E0E0E0 !important;
         background-color: transparent !important;
         border-radius: 6px;
         margin: 0.2rem 0;
+        font-weight: 500;
     }
 
+    /* Hover */
     section[data-testid="stSidebar"] .nav-link:hover {
-        background-color: #1E1E1E !important;
-        color: #FFFFFF !important;
+        background-color: #e5e7eb !important;
     }
 
+    /* Selected tab */
     section[data-testid="stSidebar"] .nav-link.active {
-        background-color: #2E7D32 !important;
-        color: #FFFFFF !important;
+        background-color: #d1fae5 !important;
         font-weight: 600;
     }
 
+    /* Mobile specific */
     @media (max-width: 768px) {
         section[data-testid="stSidebar"] {
-            background-color: #121212 !important;
-        }
-        section[data-testid="stSidebar"] * {
-            color: #E0E0E0 !important;
+            background-color: #f9fafb !important;
         }
     }
     </style>
@@ -115,14 +112,8 @@ with st.sidebar:
         orientation="vertical",
         styles={
             "container": {"padding": "0.5rem"},
-            "nav-link": {
-                "font-size": "1.05rem",
-                "text-align": "left",
-                "margin": "0.2rem",
-            },
-            "nav-link-selected": {
-                "background-color": "#2E7D32"
-            },
+            "nav-link": {"font-size": "1.05rem", "text-align": "left"},
+            "nav-link-selected": {},
         }
     )
 
@@ -143,29 +134,30 @@ if selected == "🏠 Home":
     with st.expander("About HIV"):
         st.markdown("""
         HIV attacks the immune system and can progress to AIDS without treatment.
-        Key challenges include rapid mutation, drug resistance, and complex host-virus interactions.
+        Key challenges include rapid mutation, drug resistance, and host–virus dynamics.
         """)
 
     with st.expander("About V-HIVRAP", expanded=True):
         st.markdown("""
-        V-HIVRAP is an interactive research platform designed to:
-        - Simulate HIV drug resistance
+        V-HIVRAP is an interactive research platform to:
+        - Simulate drug resistance evolution
         - Model host protein suppression and gene editing
-        - Explore drug–target–mutation graphs
+        - Explore drug–target–mutation relationships
         - Compare multiple treatment scenarios
-        - Provide explainable AI insights
+        - Generate explainable insights
         """)
 
-    with st.expander("📖 How to Use V-HIVRAP", expanded=True):
+    with st.expander("📖 How to Use", expanded=True):
         st.markdown("""
-        1. Select a module from the sidebar  
+        1. Choose a module from the sidebar  
         2. Adjust parameters and run simulations  
-        3. All runs are captured automatically  
-        4. Compare results in Scenario Comparator  
-        5. Use AI Assistant for explanations
+        3. All runs are tracked automatically  
+        4. Compare scenarios visually  
+        5. Use AI Assistant for interpretation
         """)
 
     st.subheader("Quick Viral Load Demo")
+
     col_l, col_r = st.columns([1, 2])
 
     with col_l:
@@ -186,11 +178,11 @@ if selected == "🏠 Home":
             title="Simulated Viral Load",
             xaxis_title="Time (days)",
             yaxis_title="Relative Viral Load",
-            template="plotly_dark" if st.get_option("theme.base") == "dark" else "plotly_white"
+            template="plotly_white"
         )
         st.plotly_chart(fig, use_container_width=True)
 
-    st.subheader("Drugs Available in Simulations")
+    st.subheader("Drugs Available")
     st.write(", ".join([f"**{d}**" for d in REAL_DRUGS]))
 
 # ───────────────────────────────────────────────
@@ -224,7 +216,7 @@ elif selected == "📊 Scenario Comparator":
 st.markdown("---")
 st.markdown(
     """
-    <div style='text-align:center; color:#78909c; font-size:0.9rem; padding:1rem;'>
+    <div style='text-align:center; color:#6b7280; font-size:0.9rem; padding:1rem;'>
         V-HIVRAP v0.1.0 • Research simulation tool •
         Developed by Simon •
         Contact: <a href='mailto:symoprof83@gmail.com'>symoprof83@gmail.com</a>
