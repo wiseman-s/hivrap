@@ -3,7 +3,7 @@ from streamlit_option_menu import option_menu
 import numpy as np
 import plotly.graph_objects as go
 
-# Import your modules (assuming they are in a 'modules' folder)
+# Import your modules
 from modules.kg_gnn import kg_gnn_module
 from modules.resistance_engine import resistance_engine
 from modules.host_protein_model import host_protein_model
@@ -13,7 +13,7 @@ from modules.ai_assistant import ai_explain
 from modules.scenario_comparator import scenario_comparator
 
 # ───────────────────────────────────────────────
-# Page Configuration (modern & accessible-friendly)
+# Page Configuration
 # ───────────────────────────────────────────────
 st.set_page_config(
     page_title="V-HIVRAP – Virtual HIV Research & Analysis Platform",
@@ -21,23 +21,68 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
-        'Get Help': 'https://github.com/your-repo/v-hivrap/issues',
-        'Report a bug': 'https://github.com/your-repo/v-hivrap/issues',
-        'About': " Research simulation tool for HIV drug resistance & host interactions."
+        "Get Help": "https://github.com/your-repo/v-hivrap/issues",
+        "Report a bug": "https://github.com/your-repo/v-hivrap/issues",
+        "About": "Research simulation tool for HIV drug resistance & host interactions."
     }
 )
 
 # ───────────────────────────────────────────────
-# Initialize Session State
+# ✅ MOBILE-SAFE SIDEBAR COLOR FIX (DO NOT REMOVE)
+# ───────────────────────────────────────────────
+st.markdown(
+    """
+    <style>
+    section[data-testid="stSidebar"] {
+        background-color: #121212 !important;
+    }
+
+    section[data-testid="stSidebar"] .nav {
+        background-color: #121212 !important;
+    }
+
+    section[data-testid="stSidebar"] .nav-link {
+        color: #E0E0E0 !important;
+        background-color: transparent !important;
+        border-radius: 6px;
+        margin: 0.2rem 0;
+    }
+
+    section[data-testid="stSidebar"] .nav-link:hover {
+        background-color: #1E1E1E !important;
+        color: #FFFFFF !important;
+    }
+
+    section[data-testid="stSidebar"] .nav-link.active {
+        background-color: #2E7D32 !important;
+        color: #FFFFFF !important;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        section[data-testid="stSidebar"] {
+            background-color: #121212 !important;
+        }
+        section[data-testid="stSidebar"] * {
+            color: #E0E0E0 !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# ───────────────────────────────────────────────
+# Session State
 # ───────────────────────────────────────────────
 if "simulations" not in st.session_state:
-    st.session_state.simulations = []           # list of dicts: each saved run {id, name, type, data, params, timestamp}
+    st.session_state.simulations = []
 
 if "current_scenario_name" not in st.session_state:
     st.session_state.current_scenario_name = ""
 
 if "app_version" not in st.session_state:
-    st.session_state.app_version = "0.1.0 "
+    st.session_state.app_version = "0.1.0"
 
 # ───────────────────────────────────────────────
 # Sidebar Navigation
@@ -47,7 +92,7 @@ with st.sidebar:
     st.caption(f"Version {st.session_state.app_version}")
 
     selected = option_menu(
-        menu_title=None,  # No title to save space
+        menu_title=None,
         options=[
             "🏠 Home",
             "🧬 Resistance Engine",
@@ -57,18 +102,32 @@ with st.sidebar:
             "💡 AI Assistant",
             "📊 Scenario Comparator"
         ],
-        icons=["house", "activity", "shield-check", "diagram-3", "vr", "robot", "bar-chart-line"],
+        icons=[
+            "house",
+            "activity",
+            "shield-check",
+            "diagram-3",
+            "vr",
+            "robot",
+            "bar-chart-line"
+        ],
         default_index=0,
         orientation="vertical",
         styles={
-            "container": {"padding": "0.5rem", "background-color": "#f0f2f6"},
-            "nav-link": {"font-size": "1.1rem", "text-align": "left", "margin": "0.2rem", "--hover-color": "#eee"},
-            "nav-link-selected": {"background-color": "#2e7d32"},
+            "container": {"padding": "0.5rem"},
+            "nav-link": {
+                "font-size": "1.05rem",
+                "text-align": "left",
+                "margin": "0.2rem",
+            },
+            "nav-link-selected": {
+                "background-color": "#2E7D32"
+            },
         }
     )
 
 # ───────────────────────────────────────────────
-# Real HIV Drugs List
+# Real HIV Drugs
 # ───────────────────────────────────────────────
 REAL_DRUGS = ["Tenofovir", "Lamivudine", "Dolutegravir", "Efavirenz"]
 
@@ -77,151 +136,74 @@ REAL_DRUGS = ["Tenofovir", "Lamivudine", "Dolutegravir", "Efavirenz"]
 # ───────────────────────────────────────────────
 if selected == "🏠 Home":
     st.title("V-HIVRAP – Virtual HIV Research & Analysis Platform")
-    st.markdown("**Research simulation environment for HIV drug resistance, host interactions, and gene editing interventions**")
+    st.markdown(
+        "**Research simulation environment for HIV drug resistance, host interactions, and gene editing interventions**"
+    )
 
-    # ── About HIV ────────────────────────────────────────
-    with st.expander("About HIV", expanded=False):
+    with st.expander("About HIV"):
         st.markdown("""
-        Human Immunodeficiency Virus (**HIV**) targets the immune system. Without treatment, it can progress to AIDS.  
-        Key challenges include **drug resistance**, rapid viral mutation, and complex host-virus dynamics.
+        HIV attacks the immune system and can progress to AIDS without treatment.
+        Key challenges include rapid mutation, drug resistance, and complex host-virus interactions.
         """)
 
-    # ── About Platform ───────────────────────────────────
     with st.expander("About V-HIVRAP", expanded=True):
         st.markdown("""
-        V-HIVRAP is an **interactive virtual platform** for researchers to:
-        - Simulate **drug resistance evolution**
-        - Model **host-mediated suppression** & gene editing
-        - Explore **drug-target-mutation graphs** with GNN insights
-        - Visualize viral populations in 3D
-        - Compare scenarios & get explainable AI support
+        V-HIVRAP is an interactive research platform designed to:
+        - Simulate HIV drug resistance
+        - Model host protein suppression and gene editing
+        - Explore drug–target–mutation graphs
+        - Compare multiple treatment scenarios
+        - Provide explainable AI insights
         """)
 
-    # ── How to Use – now expandable ────────────────────────────────
     with st.expander("📖 How to Use V-HIVRAP", expanded=True):
         st.markdown("""
-        This platform is designed for quick, iterative exploration of HIV treatment scenarios.  
-        **No manual saving required** — everything flows automatically.
-
-        1. **Start here on Home**  
-           Play with the quick viral load demo below to get a feeling for the system.
-
-        2. **Choose a module from the sidebar**  
-           - Adjust parameters (drugs, sliders, checkboxes, etc.)  
-           - Click **Run Simulation** (or equivalent button)
-
-        3. **Results are captured automatically**  
-           Every run is added to your current session.
-
-        4. **Compare & analyze**  
-           Switch to **Scenario Comparator** tab → see all your runs side-by-side  
-           Export curves / parameters as CSV/JSON whenever needed
-
-        5. **Get explanations**  
-           Use the **AI Assistant** tab for plain-language explanations  
-           Open **Explainable Insights** expanders in modules for key factors
-
-        6. **Visualize deeper**  
-           Explore pathways in **Knowledge Graph + GNN**  
-           Observe viral particles in **VR / Advanced Viz**
-
-        **Quick tips**  
-        • All data stays in your browser session (close tab → reset)  
-        • Run dozens of scenarios — Comparator collects them all  
-        • Use consistent real drug names across modules  
-        • Simulations are illustrative — not clinical advice
+        1. Select a module from the sidebar  
+        2. Adjust parameters and run simulations  
+        3. All runs are captured automatically  
+        4. Compare results in Scenario Comparator  
+        5. Use AI Assistant for explanations
         """)
 
-        st.info("Tip: Keep this guide open while you explore the first few modules.")
-
-    # ── Interactive Viral Load Demo ──────────────────────
     st.subheader("Quick Viral Load Demo")
-    st.caption("Adjust parameters to see simulated viral suppression (toy model for illustration)")
+    col_l, col_r = st.columns([1, 2])
 
-    col_left, col_right = st.columns([1, 2])
-
-    with col_left:
-        drug_pressure = st.slider(
-            "Drug Pressure (0 = none, 1 = maximum)",
-            min_value=0.0,
-            max_value=1.0,
-            value=0.6,
-            step=0.05,
-            help="Higher values represent stronger treatment effect."
+    with col_l:
+        drug_pressure = st.slider("Drug Pressure", 0.0, 1.0, 0.6, 0.05)
+        enable_gene = st.checkbox("Enable Gene Editing")
+        gene_effect = (
+            st.slider("Gene Editing Effectiveness", 0.0, 1.0, 0.5, 0.05)
+            if enable_gene else 0.0
         )
 
-        enable_gene = st.checkbox("Enable Gene Editing (e.g. CCR5 knockout)", value=False)
-        gene_effect = st.slider(
-            "Gene Editing Effectiveness",
-            min_value=0.0,
-            max_value=1.0,
-            value=0.5,
-            step=0.05,
-            disabled=not enable_gene,
-            help="Fraction of cells successfully edited."
-        ) if enable_gene else 0.0
-
-    with col_right:
-        DAYS = 120
-        t = np.linspace(0, DAYS, 200)
-        # Very simplified exponential decay model (placeholder – real model in resistance/host modules)
+    with col_r:
+        t = np.linspace(0, 120, 200)
         viral_load = np.exp(-0.05 * t) * (1 + 1.5 * (1 - drug_pressure)) * (1 + 0.8 * (1 - gene_effect))
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(
-            x=t, y=viral_load,
-            mode='lines',
-            line=dict(color='#FF9800', width=3),
-            name="Relative Viral Load"
-        ))
+        fig.add_trace(go.Scatter(x=t, y=viral_load, mode="lines", name="Viral Load"))
         fig.update_layout(
-            title="Simulated Viral Load Trajectory",
+            title="Simulated Viral Load",
             xaxis_title="Time (days)",
-            yaxis_title="Relative Viral Load (log scale recommended for real use)",
-            template="plotly_dark" if st.get_option("theme.base") == "dark" else "plotly_white",
-            height=420,
-            hovermode="x unified"
+            yaxis_title="Relative Viral Load",
+            template="plotly_dark" if st.get_option("theme.base") == "dark" else "plotly_white"
         )
         st.plotly_chart(fig, use_container_width=True)
 
-    # ── Available Drugs ──────────────────────────────────
     st.subheader("Drugs Available in Simulations")
-    st.write(", ".join([f"**{drug}**" for drug in REAL_DRUGS]))
-
-    # ── Features & Goals ─────────────────────────────────
-    cols = st.columns(2)
-    with cols[0]:
-        st.markdown("### Key Features")
-        st.markdown("""
-        • Multi-drug resistance simulation  
-        • Host protein & gene editing modeling  
-        • Interactive knowledge graph + GNN  
-        • 3D viral particle visualization  
-        • AI-powered explanations  
-        • Scenario comparison & export
-        """)
-
-    with cols[1]:
-        st.markdown("### Research Goals")
-        st.markdown("""
-        • Safe hypothesis testing environment  
-        • Explore viral dynamics under pressure  
-        • Evaluate gene editing potential  
-        • Support drug combination & repurposing ideas  
-        • Generate publication-grade visuals & insights
-        """)
+    st.write(", ".join([f"**{d}**" for d in REAL_DRUGS]))
 
 # ───────────────────────────────────────────────
-# Other Modules (with explainability where relevant)
+# Other Modules
 # ───────────────────────────────────────────────
 elif selected == "🧬 Resistance Engine":
     resistance_engine()
-    with st.expander("Explainable Insights", expanded=False):
+    with st.expander("Explainable Insights"):
         explainability_panel()
 
 elif selected == "🧠 Host-Protein Suppression":
     host_protein_model()
-    with st.expander("Explainable Insights", expanded=False):
+    with st.expander("Explainable Insights"):
         explainability_panel()
 
 elif selected == "🤖 Knowledge Graph + GNN":
@@ -237,13 +219,16 @@ elif selected == "📊 Scenario Comparator":
     scenario_comparator()
 
 # ───────────────────────────────────────────────
-# Global Footer
+# Footer
 # ───────────────────────────────────────────────
 st.markdown("---")
-footer_html = f"""
-<div style='text-align:center; color:#78909c; font-size:0.9rem; padding:1rem;'>
-    V-HIVRAP v{st.session_state.app_version} • Research simulation tool • 
-    Developed by Simon • Contact: <a href='mailto:symoprof83@gmail.com'>symoprof83@gmail.com</a>
-</div>
-"""
-st.markdown(footer_html, unsafe_allow_html=True)
+st.markdown(
+    """
+    <div style='text-align:center; color:#78909c; font-size:0.9rem; padding:1rem;'>
+        V-HIVRAP v0.1.0 • Research simulation tool •
+        Developed by Simon •
+        Contact: <a href='mailto:symoprof83@gmail.com'>symoprof83@gmail.com</a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
